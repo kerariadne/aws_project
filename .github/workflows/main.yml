@@ -1,30 +1,21 @@
-name: Deploy Static Website to S3
+name: Upload Website
 
 on:
   push:
     branches:
-      - main
+    - main
 
 jobs:
-  deploy:
+  deploy-site:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - uses: actions/checkout@v2
+      - uses: jakejarvis/s3-sync-action@master
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1 
-        
-      - name: Sync files to S3 bucket
-        uses: jakejarvis/s3-sync-action@v0.5.1
-        with:
-          args: --delete --follow-symlinks
+          args: --delete
         env:
-          AWS_S3_BUCKET: aws-fundamentals-task-tamar-abramishvili
-          AWS_REGION: us-east-1  
-          SOURCE_DIR: './'  
-          DEST_DIR: '/'
+          AWS_S3_BUCKET: YOUR BUCKET NAME
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SOURCE_DIR: ./main
