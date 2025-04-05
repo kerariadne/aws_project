@@ -1,27 +1,4 @@
-# name: Upload Website
-
-# on:
-#   push:
-#     branches:
-#     - main
-
-# jobs:
-#   deploy-site:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v2
-#       - uses: jakejarvis/s3-sync-action@master
-#         with:
-#           args: --delete
-#         env:
-#           AWS_S3_BUCKET: YOUR BUCKET NAME
-#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
-#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           SOURCE_DIR: ./main
-
-
-name: Deploy Static Website to S3
+name: Deploy Index.html to S3
 
 on:
   push:
@@ -40,16 +17,10 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN}}
-          aws-region: us-east-1 
-          # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          # AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN}}
-          # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          # AWS_REGION: us-east-1  
+          aws-region: us-east-1  # Change to your bucket's region
         
-      - name: Sync files to S3 bucket
+      - name: Upload only index.html
         run: |
-          aws s3 sync ./ s3://aws-fundamentals-task-tamar-abramishvili/ \
-            --delete \
+          aws s3 cp index.html s3://aws-fundamentals-task-tamar-abramishvili/ \
             --cache-control "max-age=31536000" \
-            --acl public-read
+            --no-progress
